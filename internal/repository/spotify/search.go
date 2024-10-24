@@ -37,15 +37,10 @@ type SpotifyTrackObject struct {
 type SpotifyAlbumObject struct {
 	AlbumType            string                     `json:"album_type"`
 	TotalTracks          int                        `json:"total_tracks"`
-	AvailableMarkets     []string                   `json:"available_markets"`
-	Href                 string                     `json:"href"`
-	Id                   int                        `json:"id"`
 	Images               []SpotifyAlbumImagesObject `json:"images"`
 	Name                 string                     `json:"name"`
 	ReleaseDate          string                     `json:"release_date"`
 	ReleaseDatePrecision string                     `json:"release_date_precision"`
-	Type                 string                     `json:"type"`
-	Uri                  string                     `json:"uri"`
 }
 
 type SpotifyAlbumImagesObject struct {

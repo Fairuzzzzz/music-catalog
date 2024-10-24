@@ -2,7 +2,7 @@ package httpclient
 
 import "net/http"
 
-//go:generate mockgen -source=client.go -destination=client_mock_test.go -package=httpclient
+//go:generate mockgen -source=client.go -destination=client_mock.go -package=httpclient
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
