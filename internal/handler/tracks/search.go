@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 )
 
 func (h *Handler) Search(c *gin.Context) {
@@ -23,6 +24,9 @@ func (h *Handler) Search(c *gin.Context) {
 	if err != nil {
 		pageIndex = 1
 	}
+
+	// Log
+	log.Info().Msgf("Search request: query:%s, pageSize=%d, pageIndex=%d", query, pageSize, pageIndex)
 
 	response, err := h.service.Search(ctx, query, pageSize, pageIndex)
 	if err != nil {

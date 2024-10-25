@@ -30,7 +30,7 @@ func (o *outbound) GetTokenDetails() (string, string, error) {
 func (o *outbound) generateToken() error {
 	formData := url.Values{}
 	formData.Set("grant_type", "client_credentials")
-	formData.Set("clien_id", o.cfg.SpotifyConfig.ClientID)
+	formData.Set("client_id", o.cfg.SpotifyConfig.ClientID)
 	formData.Set("client_secret", o.cfg.SpotifyConfig.ClientSecret)
 
 	encodedUrl := formData.Encode()
@@ -57,6 +57,12 @@ func (o *outbound) generateToken() error {
 		log.Error().Err(err).Msg("error unmarshal response from spotify")
 		return err
 	}
+
+	if response.AccessToken == "" {
+		log.Error().Err(err).Msg("error getting access token from Spotify")
+	}
+
+	log.Info().Msgf("Generated Spotify token: %s", response.AccessToken)
 
 	o.AccessToken = response.AccessToken
 	o.TokenType = response.TokenType

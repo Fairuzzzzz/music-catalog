@@ -4,6 +4,6 @@ service:
 database:
   dataSourceName: "postgres://admin:root@localhost:5432/test_db?sslmode=disable"
 
-spotify:
+spotifyConfig:
   clientID: ""
   clientSecret: ""
