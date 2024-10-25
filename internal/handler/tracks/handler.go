@@ -3,6 +3,7 @@ package tracks
 import (
 	"context"
 
+	"github.com/Fairuzzzzz/music-catalog/internal/middleware"
 	"github.com/Fairuzzzzz/music-catalog/internal/models/spotify"
 	"github.com/gin-gonic/gin"
 )
@@ -26,5 +27,6 @@ func NewHandler(api *gin.Engine, service service) *Handler {
 
 func (h *Handler) RegisterRoute() {
 	route := h.Group("/tracks")
+	route.Use(middleware.AuthMiddleware())
 	route.GET("/search", h.Search)
 }
