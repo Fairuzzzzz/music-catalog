@@ -25,10 +25,12 @@ func (h *Handler) Search(c *gin.Context) {
 		pageIndex = 1
 	}
 
+	userID := c.GetUint("userID")
+
 	// Log
 	log.Info().Msgf("Search request: query:%s, pageSize=%d, pageIndex=%d", query, pageSize, pageIndex)
 
-	response, err := h.service.Search(ctx, query, pageSize, pageIndex)
+	response, err := h.service.Search(ctx, query, pageSize, pageIndex, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

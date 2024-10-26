@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/Fairuzzzzz/music-catalog/internal/models/spotify"
+	"github.com/Fairuzzzzz/music-catalog/internal/models/trackactivities"
 	spotifyRepo "github.com/Fairuzzzzz/music-catalog/internal/repository/spotify"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
@@ -17,7 +18,11 @@ func Test_service_Search(t *testing.T) {
 
 	mockSpotifyOutbound := NewMockspotifyOutbound(ctrlMock)
 
+	mockTrackActivityRepo := NewMocktrackActivitesRepository(ctrlMock)
+
 	next := "https://api.spotify.com/v1/search?query=bohemian+rhapsody&type=track&market=ID&locale=en-US%2Cen%3Bq%3D0.5&offset=20&limit=20"
+
+	isLiked := true
 	type args struct {
 		query     string
 		pageSize  int
@@ -53,6 +58,7 @@ func Test_service_Search(t *testing.T) {
 						Explicit: false,
 						Id:       "3z8h0TU7ReDPLIbEnYhWZb",
 						Name:     "Bohemian Rhapsody",
+						IsLiked:  &isLiked,
 					},
 				},
 				Total: 907,
@@ -102,6 +108,12 @@ func Test_service_Search(t *testing.T) {
 						},
 					},
 				}, nil)
+
+				mockTrackActivityRepo.EXPECT().GetBulkSpotifyIDs(gomock.Any(), uint(1), []string{"3z8h0TU7ReDPLIbEnYhWZb"}).Return(map[string]trackactivities.TrackActivity{
+					"3z8h0TU7ReDPLIbEnYhWZb": {
+						IsLiked: &isLiked,
+					},
+				}, nil)
 			},
 		},
 		{
@@ -122,9 +134,10 @@ func Test_service_Search(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mockFn(tt.args)
 			s := &service{
-				spotifyOutbound: mockSpotifyOutbound,
+				spotifyOutbound:     mockSpotifyOutbound,
+				trackActivitiesRepo: mockTrackActivityRepo,
 			}
-			got, err := s.Search(context.Background(), tt.args.query, tt.args.pageSize, tt.args.pageIndex)
+			got, err := s.Search(context.Background(), tt.args.query, tt.args.pageSize, tt.args.pageIndex, 1)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("service.Search() error = %v, wantErr %v", err, tt.wantErr)
 				return

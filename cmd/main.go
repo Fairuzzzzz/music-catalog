@@ -8,8 +8,10 @@ import (
 	membershipsHandler "github.com/Fairuzzzzz/music-catalog/internal/handler/memberships"
 	tracksHandler "github.com/Fairuzzzzz/music-catalog/internal/handler/tracks"
 	"github.com/Fairuzzzzz/music-catalog/internal/models/memberships"
+	"github.com/Fairuzzzzz/music-catalog/internal/models/trackactivities"
 	membershipsRepo "github.com/Fairuzzzzz/music-catalog/internal/repository/memberships"
 	"github.com/Fairuzzzzz/music-catalog/internal/repository/spotify"
+	trackactivitiesRepo "github.com/Fairuzzzzz/music-catalog/internal/repository/trackactivities"
 	membershipsSvc "github.com/Fairuzzzzz/music-catalog/internal/service/memberships"
 	"github.com/Fairuzzzzz/music-catalog/internal/service/tracks"
 	"github.com/Fairuzzzzz/music-catalog/pkg/httpclient"
@@ -41,6 +43,7 @@ func main() {
 	}
 
 	db.AutoMigrate(&memberships.User{})
+	db.AutoMigrate(&trackactivities.TrackActivity{})
 
 	httpClient := httpclient.NewClient(&http.Client{})
 
@@ -48,9 +51,11 @@ func main() {
 
 	membershipRepo := membershipsRepo.NewRepository(db)
 
+	trackActivitiesRepo := trackactivitiesRepo.NewRepository(db)
+
 	membershipSvc := membershipsSvc.NewService(cfg, membershipRepo)
 
-	tracksSvc := tracks.NewService(spotifyOutbound)
+	tracksSvc := tracks.NewService(spotifyOutbound, trackActivitiesRepo)
 
 	membershipHandler := membershipsHandler.NewHandler(r, membershipSvc)
 	membershipHandler.RegisterRoute()

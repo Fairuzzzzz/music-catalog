@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/Fairuzzzzz/music-catalog/internal/models/spotify"
+	"github.com/Fairuzzzzz/music-catalog/pkg/jwt"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
@@ -50,7 +51,7 @@ func TestHandler_Search(t *testing.T) {
 			},
 			wantErr: false,
 			mockFn: func() {
-				mockSvc.EXPECT().Search(gomock.Any(), "bohemian rhapsody", 10, 1).Return(&spotify.SearchResponse{
+				mockSvc.EXPECT().Search(gomock.Any(), "bohemian rhapsody", 10, 1, uint(1)).Return(&spotify.SearchResponse{
 					Limit:  20,
 					Offset: 0,
 					Items: []spotify.SpotifyTrackObject{
@@ -78,7 +79,7 @@ func TestHandler_Search(t *testing.T) {
 			expectedBody:       spotify.SearchResponse{},
 			wantErr:            true,
 			mockFn: func() {
-				mockSvc.EXPECT().Search(gomock.Any(), "bohemian rhapsody", 10, 1).Return(nil, assert.AnError)
+				mockSvc.EXPECT().Search(gomock.Any(), "bohemian rhapsody", 10, 1, uint(1)).Return(nil, assert.AnError)
 			},
 		},
 	}
@@ -98,6 +99,11 @@ func TestHandler_Search(t *testing.T) {
 
 			req, err := http.NewRequest(http.MethodGet, endpoint, nil)
 			assert.NoError(t, err)
+
+			// Token JWT Authorization
+			token, err := jwt.CreateToken(1, "", "")
+			assert.NoError(t, err)
+			req.Header.Set("Authorization", token)
 
 			// Membuat ServeHTTP
 			h.ServeHTTP(w, req)
