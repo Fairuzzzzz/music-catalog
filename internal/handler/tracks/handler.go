@@ -13,6 +13,7 @@ import (
 type service interface {
 	Search(ctx context.Context, query string, pageSize, pageIndex int, userID uint) (*spotify.SearchResponse, error)
 	UpsertTrackActivites(ctx context.Context, userID uint, request trackactivities.TrackActivitiesRequest) error
+	GetRecommendation(ctx context.Context, userID uint, limit int, trackID string) (*spotify.RecommendationResponse, error)
 }
 
 type Handler struct {
@@ -32,4 +33,5 @@ func (h *Handler) RegisterRoute() {
 	route.Use(middleware.AuthMiddleware())
 	route.GET("/search", h.Search)
 	route.POST("/track-activity", h.UpsertTrackActivities)
+	route.GET("/recommendation", h.GetRecommendation)
 }
