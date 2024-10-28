@@ -43,10 +43,10 @@ func (m *MockspotifyOutbound) EXPECT() *MockspotifyOutboundMockRecorder {
 }
 
 // GetRecommendation mocks base method.
-func (m *MockspotifyOutbound) GetRecommendation(ctx context.Context, limit int, trackID string) (*spotify.SpotifySearchResponse, error) {
+func (m *MockspotifyOutbound) GetRecommendation(ctx context.Context, limit int, trackID string) (*spotify.SpotifyRecommendationResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRecommendation", ctx, limit, trackID)
-	ret0, _ := ret[0].(*spotify.SpotifySearchResponse)
+	ret0, _ := ret[0].(*spotify.SpotifyRecommendationResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

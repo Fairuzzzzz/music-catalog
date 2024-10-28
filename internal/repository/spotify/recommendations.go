@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (o *outbound) GetRecommendation(ctx context.Context, limit int, trackID string) (*SpotifySearchResponse, error) {
+func (o *outbound) GetRecommendation(ctx context.Context, limit int, trackID string) (*SpotifyRecommendationResponse, error) {
 	params := url.Values{}
 	params.Set("limit", strconv.Itoa(limit))
 	params.Set("market", "ID")
@@ -43,7 +43,7 @@ func (o *outbound) GetRecommendation(ctx context.Context, limit int, trackID str
 	defer resp.Body.Close()
 
 	// Unmarshal response
-	var response SpotifySearchResponse
+	var response SpotifyRecommendationResponse
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
 		log.Error().Err(err).Msg("error unmarshal recommendation response from spotify")

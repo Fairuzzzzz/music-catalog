@@ -350,7 +350,7 @@ func Test_repository_GetBulkSpotifyIDs(t *testing.T) {
 			},
 			wantErr: false,
 			mockFn: func(args args) {
-				mock.ExpectQuery(`SELECT \* FROM "track_activities" .+`).WithArgs(args.userID, strings.Join(args.spotifyIDs, ","), 1).WillReturnRows(
+				mock.ExpectQuery(`SELECT \* FROM "track_activities" .+`).WithArgs(args.userID, strings.Join(args.spotifyIDs, ",")).WillReturnRows(
 					sqlmock.NewRows([]string{
 						"id",
 						"created_at",
@@ -373,7 +373,7 @@ func Test_repository_GetBulkSpotifyIDs(t *testing.T) {
 			want:    nil,
 			wantErr: true,
 			mockFn: func(args args) {
-				mock.ExpectQuery(`SELECT \* FROM "track_activities" .+`).WithArgs(args.userID, strings.Join(args.spotifyIDs, ","), 1).WillReturnError(assert.AnError)
+				mock.ExpectQuery(`SELECT \* FROM "track_activities" .+`).WithArgs(args.userID, strings.Join(args.spotifyIDs, ",")).WillReturnError(assert.AnError)
 			},
 		},
 	}

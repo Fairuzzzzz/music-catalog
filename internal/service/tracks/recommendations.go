@@ -17,8 +17,8 @@ func (s *service) GetRecommendation(ctx context.Context, userID uint, limit int,
 	}
 
 	// Mendapatkan apakah track tersebut di like atau tidak
-	trackIDs := make([]string, len(trackDetails.Tracks.Items))
-	for idx, item := range trackDetails.Tracks.Items {
+	trackIDs := make([]string, len(trackDetails.Tracks))
+	for idx, item := range trackDetails.Tracks {
 		trackIDs[idx] = item.Id
 	}
 
@@ -31,14 +31,14 @@ func (s *service) GetRecommendation(ctx context.Context, userID uint, limit int,
 	return modelToRecommendationResponse(trackDetails, trackActivities), nil
 }
 
-func modelToRecommendationResponse(data *spotifyRepo.SpotifySearchResponse, mapTrackActivities map[string]trackactivities.TrackActivity) *spotify.RecommendationResponse {
+func modelToRecommendationResponse(data *spotifyRepo.SpotifyRecommendationResponse, mapTrackActivities map[string]trackactivities.TrackActivity) *spotify.RecommendationResponse {
 	if data == nil {
 		return nil
 	}
 
 	items := make([]spotify.SpotifyTrackObject, 0)
 
-	for _, item := range data.Tracks.Items {
+	for _, item := range data.Tracks {
 
 		artistName := make([]string, len(item.Artists))
 		for idx, artist := range item.Artists {
